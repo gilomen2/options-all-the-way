@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import './App.scss'
+// import './App.scss'
 import { items } from './sample-data'
-import { getDefaultSelectedItemOptions, pickSelectionsForOptionGroup } from './helpers'
+import {
+  formatOptionGroupForSelections,
+  getDefaultSelectedItemOptions,
+  pickSelectionsForOptionGroup
+} from './helpers'
 import classNames from 'classnames'
 import Expand from 'react-expand-animated'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { oceanNext } from './oceanNext'
 
-export const App = () => {
+export const App = ({ showSnippet = true }) => {
   const [openItem, setOpenItem] = useState(null)
   const [currentCodeSnippet, setCurrentCodeSnippet] = useState(null)
 
@@ -25,7 +29,7 @@ export const App = () => {
           key={item.id}
           item={item} />)}
       </div>
-      {currentCodeSnippet && <div className='code-snippet'>
+      {showSnippet && currentCodeSnippet && <div className='code-snippet'>
         <code>
           <pre>
             <SyntaxHighlighter style={oceanNext}>
@@ -85,7 +89,7 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
   } = currentOptionGroupSelections
 
   const handleOptionChange = optionGroup => (e, changedOption) => {
-    const newOptionGroup = { ...optionGroup }
+    const newOptionGroup = { ...formatOptionGroupForSelections(optionGroup) }
     const newChangedOption = { ...changedOption }
 
     // If the changed option is selected, we get the default selections for it's option_groups so that we can show them
@@ -114,7 +118,7 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
       const newOpt = { ...opt }
       if (newOpt.id === optionId) {
         newOpt.option_groups = newOpt.option_groups.map(og => {
-          let newOptionGroup = { ...og }
+          let newOptionGroup = { ...formatOptionGroupForSelections(og) }
           if (newOptionGroup.id === changedOptionGroup.id) {
             newOptionGroup = changedOptionGroup
           }

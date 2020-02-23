@@ -8,10 +8,18 @@ export const getDefaultSelectedItemOptions = (optionGroups) => {
         newOption.option_groups = getDefaultSelectedItemOptions(newOption.option_groups)
         return newOption
       })
-    return newOptGroup
+    return formatOptionGroupForSelections(newOptGroup)
   })
 }
 
 export const pickSelectionsForOptionGroup = (optGroup, selectedItemOptions) => {
   return selectedItemOptions.find(opt => opt.id === optGroup.id)
+}
+
+export const formatOptionGroupForSelections = (optGroup) => {
+  return {
+    id: optGroup.id,
+    name: optGroup.name,
+    options: optGroup.options
+  }
 }
