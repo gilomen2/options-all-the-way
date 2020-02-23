@@ -11,12 +11,12 @@
     .menu {
 
     }
-    .code-snippet {
-        padding: 25px;
-        background: $light-blue;
-        color: $dark;
-        border-radius: 8px;
-        border: 2px solid $blue-gray;
+
+    svg {
+        path {
+            stroke: $turquoise;
+            fill: $turquoise;
+        }
     }
 }
 

@@ -1,0 +1,87 @@
+import { Notes } from "mdx-deck"
+import { CodeSurfer } from "code-surfer"
+import { oceanicNext } from "@code-surfer/themes"
+import { AboutMe } from "./slide-layouts/about-me"
+
+export const theme = oceanicNext
+
+# Options All the Way Down
+
+---
+
+<AboutMe />
+
+---
+
+## What are we doing?
+
+<Notes>
+Favor specializes in "Anything Delivered" meaning that you can get a burger from HopDoddy, Benedryl from Walgreens, or even ask a runner to go to your house when you're out of town and bring your trash and recycling cans in from the street so your HOA doesn't get mad at you.
+
+Because of the freeform nature of our service, we've traditionally had a very free-form way of ordering.
+
+However, that can sometimes make customizing items difficult for the customer and hard to understand for the runner.
+
+Lately, we've been exploring ways to build item customization that can alleviate some of those issues for places with known menus, where customization is an important part of the menu.
+
+So, how are we doing that?
+</Notes>
+
+---
+
+## Creating Infinitely Nested Option Select Lists with React
+
+!()[]
+---
+
+<CodeSurfer>
+
+```js
+const itemStructure = [{
+  id: 'string',
+  name: 'string',
+  option_groups: [
+    {
+      id: 'string',
+      name: 'string',
+      max_selectable: 'number',
+      min_selectable: 'number',
+      default_selected: 'Array<string>',
+      options: [
+        {
+          id: 'string',
+          name: 'string',
+          option_groups: [
+            {
+              id: 'string',
+              name: 'string',
+              max_selectable: 'number',
+              min_selectable: 'number',
+              default_selected: 'Array<string>',
+              options: [
+                {
+                  id: 'string',
+                  name: 'string',
+                  option_groups: []
+                }
+              ]
+            }
+          ]
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}]
+```
+
+</CodeSurfer>
+
+<Notes>
+Recursive structure of a menu item.
+
+An item has an id and name and an array of option groups. Each option group is an object that has an array of options. These are the options that are actually selectable.
+
+Options can also have their own option groups, and so on.
+</Notes>
