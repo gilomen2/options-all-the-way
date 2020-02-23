@@ -1,0 +1,10 @@
+@import 'vars';
+
+$pretty--color-default: $turquoise;
+
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+@import '~pretty-checkbox/src/scss/variables';
+@import '~pretty-checkbox/src/scss/core';
+@import '~pretty-checkbox/src/scss/extras/animation';
+@import '~pretty-checkbox/src/scss/elements/svg/general';
+@import '~pretty-checkbox/src/scss/extras/round';

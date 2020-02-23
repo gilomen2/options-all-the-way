@@ -1,0 +1,66 @@
+@import "vars";
+@import "input-styles";
+
+.App {
+    color: $snow;
+    font-weight: 400;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    grid-column-gap: 85px;
+    .menu {
+
+    }
+    .code-snippet {
+        padding: 25px;
+        background: $light-blue;
+        color: $dark;
+        border-radius: 8px;
+        border: 2px solid $blue-gray;
+    }
+}
+
+.item-name {
+    font-size: 20px;
+    font-weight: 700;
+}
+.option-group {
+    padding: 10px 0;
+    &.nested {
+        margin-left: 25px;
+    }
+}
+.option-group-name {
+    font-size: 16px;
+    font-weight: 700;
+}
+.options {
+    .option {
+        padding: 3px 0;
+        label {
+            &.selected {
+                color: $turquoise;
+                font-weight: 500;
+            }
+        }
+    }
+}
+
+.my-node-enter {
+    opacity: 0;
+    height: 0;
+}
+.my-node-enter-active {
+    opacity: 1;
+    transition: opacity 600ms, height 600ms;
+    height: 100%;
+}
+.my-node-exit {
+    opacity: 1;
+    height: 100%;
+}
+.my-node-exit-active {
+    opacity: 0;
+    transition: opacity 600ms, height 600ms;
+    height: 0;
+}
