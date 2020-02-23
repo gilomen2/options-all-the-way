@@ -59,7 +59,6 @@ const MenuItem = ({ item, expanded, expandItem, setCurrentCodeSnippet }) => {
           nested={false}
           key={optionGroup.id}
           onChange={handleOptionSelect}
-          handleSelect={handleOptionSelect}
           optionGroupSelections={pickSelectionsForOptionGroup(optionGroup, currentSelections)}
           optionGroup={optionGroup} />)}
       </Expand>
@@ -109,7 +108,8 @@ const OptionGroup = ({ optionGroup, optionGroupSelections, onChange, nested = tr
     <div className={classNames('option-group', nested && 'nested')}>
       <div className='option-group-name'>{optionGroup.name}</div>
       <div className='options'>
-        <OptionsList optionGroup={optionGroup}
+        <OptionsList
+          optionGroup={optionGroup}
           selectedOptions={optionGroupSelectedOptions}
           onChange={handleSelect(optionGroup)}
           onNestedChange={nestedHandleSelect}
