@@ -11,3 +11,7 @@ export const getDefaultSelectedItemOptions = (optionGroups) => {
     return newOptGroup
   })
 }
+
+export const pickSelectionsForOptionGroup = (optGroup, selectedItemOptions) => {
+  return selectedItemOptions.find(opt => opt.id === optGroup.id)
+}
