@@ -1,7 +1,3 @@
-import { formatOptionGroupForSelections, getDefaultSelectedItemOptions } from '../../src/helpers'
-import classNames from 'classnames'
-import React from 'react'
-
 export const App = ({ menuItems }) => {
   return (
     <div className='App'>
@@ -47,37 +43,31 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange }) =>
     options: currentOptionGroupSelectedOptions = []
   } = currentOptionGroupSelections
 
-  const handleOptionChange = optionGroup => (e, changedOption) => {
+  const isRadioGroup = optionGroup.min_selectable === 1 && optionGroup.max_selectable === 1
+
+  const createNewOptionGroupSelections = (e, changedOption) => {
     const newOptionGroup = { ...optionGroup }
     const newChangedOption = { ...changedOption }
 
-    // If the changed option is selected, we get the default selections for it's option_groups so that we can show them
-    // as selected as well
     if (e.target.checked) {
       newChangedOption.option_groups = getDefaultSelectedItemOptions(newChangedOption.option_groups)
     }
 
-    const isRadio = optionGroup.max_selectable === 1 && optionGroup.min_selectable === 1
-    newOptionGroup.options = isRadio
-      // If it's a radio button, we can replace the current selection with the new selection
+    newOptionGroup.options = isRadioGroup
       ? [newChangedOption]
-      // If it's a checkbox, we first determine if the change is that it has become checked or unchecked
       : e.target.checked
-        // If it is checked, we add the new selection to the current selections
         ? [...currentOptionGroupSelectedOptions, newChangedOption]
-        // If it isn't checked, we filter the current selections to only those that don't match the id of the changed option
         : currentOptionGroupSelectedOptions.filter(opt => opt.id !== changedOption.id)
 
-    // We finally pass the newOptionGroup to the onChange handler
     onChange(newOptionGroup)
   }
 
-  const nestedHandleOptionChange = (optionId, parentOptionSelections) => changedOptionGroup => {
+  const createNewParentSelections = (optionId, parentOptionSelections) => changedOptionGroup => {
     const newParentOptionSelections = parentOptionSelections.map(opt => {
       const newOpt = { ...opt }
       if (newOpt.id === optionId) {
         newOpt.option_groups = newOpt.option_groups.map(og => {
-          let newOptionGroup = { ...formatOptionGroupForSelections(og) }
+          let newOptionGroup = { ...og }
           if (newOptionGroup.id === changedOptionGroup.id) {
             newOptionGroup = changedOptionGroup
           }
@@ -94,18 +84,40 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange }) =>
   }
 
   return (
-
-    <div className={classNames('option-group')}>
+    <div className={'option-group'}>
       <div className='option-group-name'>{optionGroup.name}</div>
       <div className='options'>
-        <OptionsList
-          optionGroup={optionGroup}
-          selectedOptions={currentOptionGroupSelectedOptions}
-          onChange={handleOptionChange(optionGroup)}
-          onNestedChange={nestedHandleOptionChange}
-        />
+        {optionGroup.options.map(option => {
+          const isSelected = !!currentOptionGroupSelectedOptions.find(opt => option.id === opt.id)
+          return (
+            <>
+              <div key={option.id} className='option'>
+                <input type={isRadioGroup ? 'radio' : 'checkbox'}
+                  name={optionGroup.id}
+                  id={option.id}
+                  value={option.id}
+                  checked={isSelected}
+                  onChange={e => createNewOptionGroupSelections(e, option)}
+                />
+                <label htmlFor={option.id}>{option.name}</label>
+              </div>
+
+              <div>
+                {option.option_groups.map(nestedOptionGroup => {
+                  const selOpts = currentOptionGroupSelectedOptions.find(sel => sel.id === option.id)
+                  return (
+                    <OptionGroup
+                      key={nestedOptionGroup.id}
+                      optionGroup={nestedOptionGroup}
+                      currentOptionGroupSelections={selOpts ? pickSelectionsForOptionGroup(nestedOptionGroup, selOpts.option_groups) : []}
+                      onChange={createNewParentSelections(option.id, currentOptionGroupSelectedOptions)}
+                    />)
+                })}
+              </div>
+            </>
+          )
+        })}
       </div>
     </div>
-
   )
 }

@@ -2,7 +2,6 @@ import { Notes, Image } from "mdx-deck"
 import { CodeSurfer, CodeSurferColumns, Step } from "code-surfer"
 import { oceanicNext } from "@code-surfer/themes"
 import { AboutMe } from "./slide-layouts/about-me"
-import { App } from "../src/App.js"
 
 export const theme = oceanicNext
 
@@ -67,7 +66,7 @@ Options can also have their own option groups, and so on.
 ```jsx 1 1:11 file=./examples/App.js title="Set Up Our Menu"
 ```
 
-```jsx 2 13:44 file=./examples/App.js title="Set Up Our Menu"
+```jsx 2 13:39 file=./examples/App.js title="Set Up Our Menu"
 ```
 
 ```jsx 3 14 file=./examples/App.js title="Set Up Our Menu"
@@ -142,6 +141,7 @@ We're giving it an initial state that represents anything that is selected by de
 ```jsx 4 27:39 file=./examples/App.js
 ```
 
+
 </CodeSurfer>
 
 <Notes>
@@ -171,3 +171,89 @@ And then we're passing in our handler as an onChange prop.
 
 ---
 
+<CodeSurfer>
+
+```jsx 1 41:124 file=./examples/App.js
+```
+
+```jsx 2 87:123 file=./examples/App.js
+```
+
+```jsx 3 90 file=./examples/App.js
+```
+
+```jsx 4 95:101 file=./examples/App.js
+```
+
+```jsx 5 100 file=./examples/App.js
+```
+
+</CodeSurfer>
+
+<Notes>
+Next let's look at the part that is doing the heavy lifting -- the OptionGroup component.
+
+!!NEXT!!
+
+We're going to skip down to the render method first
+
+!!NEXT!!
+
+Each option group has an array of options.
+
+!!NEXT!!
+
+For each option we're going to render a selectable radio button or checkbox
+
+!!NEXT!!
+
+And for the input's onChange prop, we're going to pass in an anonymous function that calls a function named createNewOptionGroupSelections
+</Notes>
+
+---
+
+<CodeSurfer>
+
+```jsx 1 48:64 file=./examples/App.js
+```
+
+```jsx 2 49:51 file=./examples/App.js
+```
+
+```jsx 3 52:54 file=./examples/App.js
+```
+
+```jsx 4 56:60 file=./examples/App.js
+```
+
+```jsx 5 62 file=./examples/App.js
+```
+
+```jsx 6 16:25 file=./examples/App.js
+```
+
+</CodeSurfer>
+
+<Notes>
+Looking at that function...
+
+!!NEXT!!
+
+First we make copies of objects that we are going to modify.
+
+!!NEXT!!
+
+Then, if the changed option is selected, we get the default selections for its nested option_groups so that we can show them as selected as well
+
+!!NEXT!!
+
+If it's a radio button, we can replace the current selection with the new selection. If it's a checkbox, we first determine if the change is that it has become checked or unchecked. Then, If it is checked, we add the new selection to the current selections. If it isn't checked, we filter the current selections to only those that don't match the id of the changed option.
+
+!!NEXT!!
+
+Then, we call the onChange prop and pass in our newSelections. In the case of the top-level optionGroup, the function that was passed in as the onChange prop is...
+
+!!NEXT!!
+
+The handleSetSelections function from our MenuItem component. It will take in the newSelections for the optionGroup and replace that option group in our selections state.
+</Notes>

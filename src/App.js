@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-// import './App.scss'
+import './App.scss'
 import { items } from './sample-data'
 import {
   formatOptionGroupForSelections,
@@ -88,7 +88,10 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
     options: currentOptionGroupSelectedOptions = []
   } = currentOptionGroupSelections
 
-  const handleOptionChange = optionGroup => (e, changedOption) => {
+  const isRadio = optionGroup.min_selectable === 1 && optionGroup.max_selectable === 1
+
+  const createNewOptionGroupSelections = (e, changedOption) => {
+    debugger
     const newOptionGroup = { ...formatOptionGroupForSelections(optionGroup) }
     const newChangedOption = { ...changedOption }
 
@@ -98,7 +101,6 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
       newChangedOption.option_groups = getDefaultSelectedItemOptions(newChangedOption.option_groups)
     }
 
-    const isRadio = optionGroup.max_selectable === 1 && optionGroup.min_selectable === 1
     newOptionGroup.options = isRadio
       // If it's a radio button, we can replace the current selection with the new selection
       ? [newChangedOption]
@@ -113,7 +115,8 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
     onChange(newOptionGroup)
   }
 
-  const nestedHandleOptionChange = (optionId, parentOptionSelections) => changedOptionGroup => {
+  const createNewParentSelections = (optionId, parentOptionSelections) => changedOptionGroup => {
+    debugger
     const newParentOptionSelections = parentOptionSelections.map(opt => {
       const newOpt = { ...opt }
       if (newOpt.id === optionId) {
@@ -139,56 +142,42 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
     <div className={classNames('option-group', nested && 'nested')}>
       <div className='option-group-name'>{optionGroup.name}</div>
       <div className='options'>
-        <OptionsList
-          optionGroup={optionGroup}
-          selectedOptions={currentOptionGroupSelectedOptions}
-          onChange={handleOptionChange(optionGroup)}
-          onNestedChange={nestedHandleOptionChange}
-        />
+
+        {optionGroup.options.map(option => {
+          const isSelected = !!currentOptionGroupSelectedOptions.find(opt => option.id === opt.id)
+          return (
+            <div key={option.id} className='option'>
+              <div className={classNames('pretty p-smooth', isRadio && 'p-round p-default', !isRadio && 'p-svg')}>
+                <input type={isRadio ? 'radio' : 'checkbox'}
+                  name={optionGroup.id}
+                  id={option.id}
+                  value={option.id}
+                  onChange={e => createNewOptionGroupSelections(e, option)}
+                  checked={isSelected} />
+                <div className='state p-default'>
+                  {!isRadio && <Check />}
+                  <label className={classNames(isSelected && 'selected')} htmlFor={option.id}>{option.name}</label>
+                </div>
+              </div>
+
+              <Expand open={isSelected}>
+                <div>
+                  {option.option_groups.map(nestedOptionGroup => {
+                    const selOpts = currentOptionGroupSelectedOptions.find(sel => sel.id === option.id)
+                    return (<OptionGroup
+                      key={nestedOptionGroup.id}
+                      onChange={createNewParentSelections(option.id, currentOptionGroupSelectedOptions)}
+                      currentOptionGroupSelections={selOpts ? pickSelectionsForOptionGroup(nestedOptionGroup, selOpts.option_groups) : []}
+                      optionGroup={nestedOptionGroup}/>)
+                  })}
+                </div>
+              </Expand>
+            </div>
+          )
+        })}
       </div>
     </div>
 
-  )
-}
-
-const OptionsList = ({ optionGroup, selectedOptions, onChange, onNestedChange }) => {
-  const isRadio = optionGroup.min_selectable === 1 && optionGroup.max_selectable === 1
-
-  return (
-    <>
-      {optionGroup.options.map(option => {
-        const isSelected = !!selectedOptions.find(opt => option.id === opt.id)
-        return (
-          <div key={option.id} className='option'>
-            <div className={classNames('pretty p-smooth', isRadio && 'p-round p-default', !isRadio && 'p-svg')}>
-              <input type={isRadio ? 'radio' : 'checkbox'}
-                name={optionGroup.id}
-                id={option.id}
-                value={option.id}
-                onChange={e => onChange(e, option)}
-                checked={isSelected} />
-              <div className='state p-default'>
-                {!isRadio && <Check />}
-                <label className={classNames(isSelected && 'selected')} htmlFor={option.id}>{option.name}</label>
-              </div>
-            </div>
-
-            <Expand open={isSelected}>
-              <div>
-                {option.option_groups.map(nestedOptionGroup => {
-                  const selOpts = selectedOptions.find(sel => sel.id === option.id)
-                  return (<OptionGroup
-                    key={nestedOptionGroup.id}
-                    onChange={onNestedChange(option.id, selectedOptions)}
-                    currentOptionGroupSelections={selOpts ? pickSelectionsForOptionGroup(nestedOptionGroup, selOpts.option_groups) : []}
-                    optionGroup={nestedOptionGroup}/>)
-                })}
-              </div>
-            </Expand>
-          </div>
-        )
-      })}
-    </>
   )
 }
 
