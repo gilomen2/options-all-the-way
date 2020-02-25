@@ -91,7 +91,6 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
   const isRadio = optionGroup.min_selectable === 1 && optionGroup.max_selectable === 1
 
   const createNewOptionGroupSelections = (e, changedOption) => {
-    debugger
     const newOptionGroup = { ...formatOptionGroupForSelections(optionGroup) }
     const newChangedOption = { ...changedOption }
 
@@ -115,11 +114,10 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
     onChange(newOptionGroup)
   }
 
-  const createNewParentSelections = (optionId, parentOptionSelections) => changedOptionGroup => {
-    debugger
+  const createNewParentSelections = (parentOptionId, parentOptionSelections) => changedOptionGroup => {
     const newParentOptionSelections = parentOptionSelections.map(opt => {
       const newOpt = { ...opt }
-      if (newOpt.id === optionId) {
+      if (newOpt.id === parentOptionId) {
         newOpt.option_groups = newOpt.option_groups.map(og => {
           let newOptionGroup = { ...formatOptionGroupForSelections(og) }
           if (newOptionGroup.id === changedOptionGroup.id) {
@@ -151,7 +149,9 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
                   name={optionGroup.id}
                   id={option.id}
                   value={option.id}
-                  onChange={e => createNewOptionGroupSelections(e, option)}
+                  onChange={e => {
+                    createNewOptionGroupSelections(e, option)
+                  }}
                   checked={isSelected} />
                 <div className='state p-default'>
                   {!isRadio && <Check />}
