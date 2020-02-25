@@ -138,7 +138,6 @@ const OptionGroup = ({ optionGroup, currentOptionGroupSelections, onChange, nest
   }
 
   return (
-
     <div className={classNames('option-group', nested && 'nested')}>
       <div className='option-group-name'>{optionGroup.name}</div>
       <div className='options'>
